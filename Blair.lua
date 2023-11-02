@@ -147,12 +147,10 @@ end
 local function CanContinue()
     local CanDo = false
 
-    for _, Number in pairs(GetHighestEMF()) do 
-        if Number ~= nil and typeof(Number) == "number" then
-            if Number > 1.1 then
-                CanDo = true
-                break
-            end
+    local Number = GetHighestEMF()
+    if Number ~= nil and typeof(Number) == "number" then
+        if Number > 1.1 then
+            CanDo = true
         end
     end
     return CanDo
