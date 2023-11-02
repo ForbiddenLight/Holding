@@ -169,7 +169,7 @@ local function CanContinue()
 
     local Number, EMFZone = GetHighestEMF(0)
     if Number ~= nil then
-        if Number > 1 then
+        if Number > 1.1 then
             CanDo = true
         end
     end
