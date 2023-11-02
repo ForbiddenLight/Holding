@@ -55,6 +55,7 @@ local function GetItem(ItemName, PartialName, Toggle)
     if ItemName ~= nil and PartialName ~= nil and Toggle ~= nil then
         if typeof(ItemName) == "string" and typeof(PartialName) == "string" and typeof(Toggle) == "boolean" then
             if Toggle then
+                task.wait()
                 local SearchTable = Search(Items, PartialName, "Tool")
 
                 if SearchTable[1] ~= nil then
@@ -62,6 +63,7 @@ local function GetItem(ItemName, PartialName, Toggle)
                 end
                 return false
             elseif not Toggle then
+                task.wait()
                 local Item = Items:FindFirstChild(ItemName)
 
                 if Item ~= nil then
@@ -233,5 +235,4 @@ local function Main()
     end
 end
 
-repeat task.wait() until game:IsLoaded()
 Main()
