@@ -228,7 +228,7 @@ local function Main()
         BPrompt = BookHandle:WaitForChild("NewPickupPrompt")
     end
 
-        -- repeats trying to pickup the book up and dropping it to make it unanchored, then teleporting it to the main room from the "GetMainRoom" function. won't try to teleport if the book's handle has "AlreadyTeleported" value.
+    -- repeats trying to pickup the book up and dropping it to make it unanchored, then teleporting it to the main room from the "GetMainRoom" function. won't try to teleport if the book's handle has "AlreadyTeleported" value.
     if not BookHandle:FindFirstChild("AlreadyTeleported") then
         print("/ creating teleported book value.")
         local Val = Instance.new("IntValue", BookHandle)
@@ -273,7 +273,7 @@ local function Main()
             Do Orbs exist?: %s,
             Do finger prints exist?: %s
     ]]):format(MainRoom.Name, tostring(LowestTemp), tostring(HighestEMF), OrbsExist, PrintsExist))
-    
+
     print(AnalysisString)
 end
 
