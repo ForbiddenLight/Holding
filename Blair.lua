@@ -15,6 +15,11 @@ local Van = Map:WaitForChild("Van", 2)
 
 local FirePrompt = fireproximityprompt
 
+print([[
+
+
+///////
+]])
 print("1. initiating functions.")
 -- searches a instance for a certain instances that have the same name as the "Name" input and has the same class as the "Class" input. the "Method" input is how the script will search for it.
 local function Search(Parent, Name, Class, Method)
