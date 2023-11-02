@@ -215,6 +215,7 @@ local function Main()
             SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
             task.wait(0.1)
         until Book ~= nil and SpiritBox ~= nil and Book:IsA("Tool") and SpiritBox:IsA("Tool")
+        print("    got book and spirit box.")
         
         local BookHandle = Book:WaitForChild("Handle")
         local BPrompt = BookHandle:WaitForChild("NewPickupPrompt")
@@ -236,12 +237,14 @@ local function Main()
                 task.wait() 
             until not Player.Character:FindFirstChild(Book.Name)
             print("/ teleporting book.")
+            task.wait(1)
             BookHandle.CFrame = MainRoom.CFrame
         end
 
         task.wait()
 
         -- some basic logic stuff.
+        print("6. doing some basic logic.")
         local OrbsExist = "No"
         local PrintsExist = "No"
         if IsThere["Orbs"] then
@@ -252,7 +255,7 @@ local function Main()
         end
 
         -- string that contains analytics about what exist and stuff.
-        print("6. creating analysis.")
+        print("7. creating analysis.")
         local AnalysisString = (tostring([[
             
             Script Analysis:
