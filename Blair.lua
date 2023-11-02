@@ -56,7 +56,7 @@ local function GetItem(ItemName, PartialName, Toggle)
         if typeof(ItemName) == "string" and typeof(PartialName) == "string" and typeof(Toggle) == "boolean" then
             if Toggle then
                 task.wait()
-                local SearchTable = Search(Items, PartialName, "Tool")
+                local SearchTable = Search(Items, PartialName, "Tool", "GetChildren")
 
                 if SearchTable[1] ~= nil then
                     return SearchTable
@@ -88,22 +88,38 @@ local function GetLowestTemp()
             Zone = Value.Parent
         end
     end
+    print("    fetched")
     return LowestNum, Zone
 end
 
 -- gets highest emf value.
-local function GetHighestEMF()
-    local EMFValues = Search(Zones, "EMF", "IntValue", "GetDescendants")
+local function GetHighestEMF(Type)
+    if Type == 0 then
+        local EMFValues = Search(Zones, "EMF", "IntValue", "GetDescendants")
 
-    local HighestNum = -math.huge
-    local Zone = nil
-    for _, Value in pairs(EMFValues) do
-        if Value.Value > HighestNum then
-            HighestNum = Value.Value
-            Zone = Value.Parent
+        local HighestNum = -math.huge
+        local Zone = nil
+        for _, Value in pairs(EMFValues) do
+            if Value.Value > HighestNum then
+                HighestNum = Value.Value
+                Zone = Value.Parent
+            end
         end
+        return HighestNum, Zone
+    elseif Type == 1 then
+        local EMFValues = Search(Zones, "EMF", "IntValue", "GetDescendants")
+
+        local HighestNum = -math.huge
+        local Zone = nil
+        for _, Value in pairs(EMFValues) do
+            if Value.Value > HighestNum then
+                HighestNum = Value.Value
+                Zone = Value.Parent
+            end
+        end
+        print("    fetched")
+        return HighestNum, Zone
     end
-    return HighestNum, Zone
 end
 
 -- checks for if orbs or prints(finger prints) exist.
@@ -128,6 +144,7 @@ local function OrbsAndPrints()
             break
         end
     end
+    print("    fetched")
     return IsThereTable
 end
 
@@ -142,6 +159,7 @@ local function GetMainRoom()
             break
         end
     end
+    print("    fetched")
     return Zone
 end
 
@@ -149,7 +167,7 @@ end
 local function CanContinue()
     local CanDo = false
 
-    local Number, EMFZone = GetHighestEMF()
+    local Number, EMFZone = GetHighestEMF(0)
     if Number ~= nil then
         if Number > 1 then
             CanDo = true
@@ -173,20 +191,21 @@ local function Main()
     print("3. continuing.")
 
     -- getting information about what exist after one of the emf values reach a value higher than 1.
+    print("4. fetching some basic info")
     local IsThere = OrbsAndPrints()
     local MainRoom = GetMainRoom()
     local LowestTemp, TempZone = GetLowestTemp()
-    local HighestEMF, EMFZone = GetHighestEMF()
+    local HighestEMF, EMFZone = GetHighestEMF(1)
 
     -- tries to get book and spirit box from the "GetItem" function.
-    local Book = GetItem("Ghost Writing Book", "Ghost Writing Book", false)
-    local SpiritBox = GetItem("Spirit Box", "Spirit Box", false)
+    local Book = GetItem("Ghost Writing Book", "Ghost Writing Book", true)
+    local SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
 
     if Book == nil or SpiritBox == nil then
         repeat 
             -- if book isn't in the "Items" folder, it will wait until it is parented to it.
-            Book = GetItem("Ghost Writing Book", "Ghost Writing Book", false)
-            SpiritBox = GetItem("Spirit Box", "Spirit Box", false)
+            Book = GetItem("Ghost Writing Book", "Ghost Writing Book", true)
+            SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
             task.wait()
         until Book ~= nil and SpiritBox ~= nil and Book:IsA("Tool") and SpiritBox:IsA("Tool")
         
@@ -195,6 +214,7 @@ local function Main()
 
         -- repeats trying to pickup the book up and dropping it to make it unanchored, then teleporting it to the main room from the "GetMainRoom" function. won't try to teleport if the book's handle has "AlreadyTeleported" value.
         if not BookHandle:FindFirstChild("AlreadyTeleported") then
+            print("creating teleported book value.")
             local Val = Instance.new("IntValue", BookHandle)
             Val.Name = "AlreadyTeleported"
 
@@ -202,10 +222,13 @@ local function Main()
                 FirePrompt(BPrompt) 
                 task.wait(0.1) 
             until Player.Character:FindFirstChild(Book.Name)
+            print("grabbed book.")
+            print("dropping book.")
             Action:FireServer("Drop")
             repeat 
                 task.wait() 
             until not Player.Character:FindFirstChild(Book.Name)
+            print("teleporting book.")
             BookHandle.CFrame = MainRoom.CFrame
         end
 
