@@ -270,8 +270,8 @@ local function Main()
             Main Room: %s,
             Lowest Current Temp: %s, 
             Highest Current EMF Value: %s,
-            Do Orbs exist?: %s,
-            Do finger prints exist?: %s
+            Do Orbs exist currently?: %s,
+            Do finger prints exist currently?: %s
     ]]):format(MainRoom.Name, tostring(LowestTemp), tostring(HighestEMF), OrbsExist, PrintsExist))
 
     print(AnalysisString)
