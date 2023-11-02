@@ -15,6 +15,7 @@ local Van = Map:WaitForChild("Van", 2)
 
 local FirePrompt = fireproximityprompt
 
+print("initiating functions.")
 -- searches a instance for a certain instances that have the same name as the "Name" input and has the same class as the "Class" input. the "Method" input is how the script will search for it.
 local function Search(Parent, Name, Class, Method)
     if Parent ~= nil and Name ~= nil and Class ~= nil and Method ~= nil and typeof(Parent) == "Instance" and typeof(Name) == "string" and typeof(Class) == "string" and typeof(Method) == "string" then
@@ -159,6 +160,7 @@ end
 
 local function Main()
     wait(1)
+    print("executing 'Main' function.")
     
     -- checks for if the van door has been open or hasn't been open yet, if not open, then it opens it.
     local VanPrompt = Van:WaitForChild("Van"):WaitForChild("Door"):WaitForChild("Center"):FindFirstChild("ProximityPrompt")
@@ -231,3 +233,6 @@ local function Main()
         prints(AnalysisString)
     end
 end
+
+repeat task.wait() until game:IsLoaded()
+Main()
