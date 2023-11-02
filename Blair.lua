@@ -203,15 +203,17 @@ local function Main()
     local HighestEMF, EMFZone = GetHighestEMF(1)
 
     -- tries to get book and spirit box from the "GetItem" function.
+    print("5. trying to get book and spirit box.")
     local Book = GetItem("Ghost Writing Book", "Ghost Writing Book", true)
     local SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
 
     if Book == nil or SpiritBox == nil then
         repeat 
             -- if book isn't in the "Items" folder, it will wait until it is parented to it.
+            print("    trying again.")
             Book = GetItem("Ghost Writing Book", "Ghost Writing Book", true)
             SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
-            task.wait()
+            task.wait(0.1)
         until Book ~= nil and SpiritBox ~= nil and Book:IsA("Tool") and SpiritBox:IsA("Tool")
         
         local BookHandle = Book:WaitForChild("Handle")
@@ -219,7 +221,7 @@ local function Main()
 
         -- repeats trying to pickup the book up and dropping it to make it unanchored, then teleporting it to the main room from the "GetMainRoom" function. won't try to teleport if the book's handle has "AlreadyTeleported" value.
         if not BookHandle:FindFirstChild("AlreadyTeleported") then
-            print("creating teleported book value.")
+            print("/ creating teleported book value.")
             local Val = Instance.new("IntValue", BookHandle)
             Val.Name = "AlreadyTeleported"
 
@@ -227,13 +229,13 @@ local function Main()
                 FirePrompt(BPrompt) 
                 task.wait(0.1) 
             until Player.Character:FindFirstChild(Book.Name)
-            print("grabbed book.")
-            print("dropping book.")
+            print("/ grabbed book.")
+            print("/ dropping book.")
             Action:FireServer("Drop")
             repeat 
                 task.wait() 
             until not Player.Character:FindFirstChild(Book.Name)
-            print("teleporting book.")
+            print("/ teleporting book.")
             BookHandle.CFrame = MainRoom.CFrame
         end
 
@@ -250,6 +252,7 @@ local function Main()
         end
 
         -- string that contains analytics about what exist and stuff.
+        print("6. creating analysis.")
         local AnalysisString = (tostring([[
             
             Script Analysis:
