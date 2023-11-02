@@ -203,19 +203,19 @@ local function Main()
     local HighestEMF, EMFZone = GetHighestEMF(1)
 
     -- tries to get book and spirit box from the "GetItem" function.
-    print("5. trying to get book and spirit box.")
+    print("5. trying to get book")
     local Book = GetItem("Ghost Writing Book", "Ghost Writing Book", true)
-    local SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
+    --local SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
 
-    if Book == nil or SpiritBox == nil then
+    if Book == nil then --[[or SpiritBox == nil]]
         repeat 
             -- if book isn't in the "Items" folder, it will wait until it is parented to it.
             print("    trying again.")
             Book = GetItem("Ghost Writing Book", "Ghost Writing Book", true)
-            SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
+            --SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
             task.wait(0.1)
-        until Book ~= nil and SpiritBox ~= nil and Book:IsA("Tool") and SpiritBox:IsA("Tool")
-        print("    got book and spirit box.")
+        until Book ~= nil --[[and SpiritBox ~= nil]] and Book:IsA("Tool") --[[and SpiritBox:IsA("Tool")]]
+        print("    got book")
         
         local BookHandle = Book:WaitForChild("Handle")
         local BPrompt = BookHandle:WaitForChild("NewPickupPrompt")
