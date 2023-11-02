@@ -205,68 +205,76 @@ local function Main()
     -- tries to get book and spirit box from the "GetItem" function.
     print("5. trying to get book")
     local Book = GetItem("Ghost Writing Book", "Ghost Writing Book", true)
+    local BookHandle = nil
+    local BPrompt = nil
+    if Book ~= nil then
+        BookHandle = Book:WaitForChild("Handle")
+        BPrompt = BookHandle:WaitForChild("NewPickupPrompt")
+    end
     --local SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
 
     if Book == nil then --[[or SpiritBox == nil]]
         repeat 
-            -- if book isn't in the "Items" folder, it will wait until it is parented to it.
+            -- if book isn't in the "Items" folder, it will keep trying until it is parented to it.
             print("    trying again.")
             Book = GetItem("Ghost Writing Book", "Ghost Writing Book", true)
             --SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
             task.wait(0.1)
-        until Book ~= nil --[[and SpiritBox ~= nil]] and Book:IsA("Tool") --[[and SpiritBox:IsA("Tool")]]
+        until Book ~= nil and Book:IsA("Tool") --[[and SpiritBox:IsA("Tool")]] --[[and SpiritBox ~= nil]]
+
         print("    got book")
         
-        local BookHandle = Book:WaitForChild("Handle")
-        local BPrompt = BookHandle:WaitForChild("NewPickupPrompt")
+        BookHandle = Book:WaitForChild("Handle")
+        BPrompt = BookHandle:WaitForChild("NewPickupPrompt")
+    end
 
         -- repeats trying to pickup the book up and dropping it to make it unanchored, then teleporting it to the main room from the "GetMainRoom" function. won't try to teleport if the book's handle has "AlreadyTeleported" value.
-        if not BookHandle:FindFirstChild("AlreadyTeleported") then
-            print("/ creating teleported book value.")
-            local Val = Instance.new("IntValue", BookHandle)
-            Val.Name = "AlreadyTeleported"
+    if not BookHandle:FindFirstChild("AlreadyTeleported") then
+        print("/ creating teleported book value.")
+        local Val = Instance.new("IntValue", BookHandle)
+        Val.Name = "AlreadyTeleported"
 
-            repeat 
-                FirePrompt(BPrompt) 
-                task.wait(0.1) 
-            until Player.Character:FindFirstChild(Book.Name)
-            print("/ grabbed book.")
-            print("/ dropping book.")
-            Action:FireServer("Drop")
-            repeat 
-                task.wait() 
-            until not Player.Character:FindFirstChild(Book.Name)
-            print("/ teleporting book.")
-            task.wait(1)
-            BookHandle.CFrame = MainRoom.CFrame
-        end
-
-        task.wait()
-
-        -- some basic logic stuff.
-        print("6. doing some basic logic.")
-        local OrbsExist = "No"
-        local PrintsExist = "No"
-        if IsThere["Orbs"] then
-            OrbsExist = "Yes"
-        end
-        if IsThere["Prints"] then
-            OrbsExist = "Yes"
-        end
-
-        -- string that contains analytics about what exist and stuff.
-        print("7. creating analysis.")
-        local AnalysisString = (tostring([[
-            
-            Script Analysis:
-                Main Room: %s,
-                Lowest Current Temp: %s, 
-                Highest Current EMF Value: %s,
-                Do Orbs exist?: %s,
-                Do finger prints exist?: %s
-        ]]):format(MainRoom.Name, tostring(LowestTemp), tostring(HighestEMF), OrbsExist, PrintsExist))
-        print(AnalysisString)
+        repeat 
+            FirePrompt(BPrompt) 
+            task.wait(0.1) 
+        until Player.Character:FindFirstChild(Book.Name)
+        print("/ grabbed book.")
+        print("/ dropping book.")
+        Action:FireServer("Drop")
+        repeat 
+            task.wait() 
+        until not Player.Character:FindFirstChild(Book.Name)
+        print("/ teleporting book.")
+        task.wait(1)
+        BookHandle.CFrame = MainRoom.CFrame
     end
+
+    task.wait()
+
+    -- some basic logic stuff.
+    print("6. doing some basic logic.")
+    local OrbsExist = "No"
+    local PrintsExist = "No"
+    if IsThere["Orbs"] then
+        OrbsExist = "Yes"
+    end
+    if IsThere["Prints"] then
+        OrbsExist = "Yes"
+    end
+
+    -- string that contains analytics about what exist and stuff.
+    print("7. creating analysis.")
+    local AnalysisString = (tostring([[
+
+        Script Analysis:
+            Main Room: %s,
+            Lowest Current Temp: %s, 
+            Highest Current EMF Value: %s,
+            Do Orbs exist?: %s,
+            Do finger prints exist?: %s
+    ]]):format(MainRoom.Name, tostring(LowestTemp), tostring(HighestEMF), OrbsExist, PrintsExist))
+    
+    print(AnalysisString)
 end
 
 Main()
