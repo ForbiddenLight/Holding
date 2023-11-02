@@ -15,7 +15,7 @@ local Van = Map:WaitForChild("Van", 2)
 
 local FirePrompt = fireproximityprompt
 
-print("initiating functions.")
+print("1. initiating functions.")
 -- searches a instance for a certain instances that have the same name as the "Name" input and has the same class as the "Class" input. the "Method" input is how the script will search for it.
 local function Search(Parent, Name, Class, Method)
     if Parent ~= nil and Name ~= nil and Class ~= nil and Method ~= nil and typeof(Parent) == "Instance" and typeof(Name) == "string" and typeof(Class) == "string" and typeof(Method) == "string" then
@@ -147,9 +147,9 @@ end
 local function CanContinue()
     local CanDo = false
 
-    local Number = GetHighestEMF()
-    if Number ~= nil and typeof(Number) == "number" then
-        if Number > 1.1 then
+    local Number, EMFZone = GetHighestEMF()
+    if Number ~= nil then
+        if Number > 1 then
             CanDo = true
         end
     end
@@ -158,7 +158,7 @@ end
 
 local function Main()
     wait(1)
-    print("executing 'Main' function.")
+    print("2. executing 'Main' function.")
     
     -- checks for if the van door has been open or hasn't been open yet, if not open, then it opens it.
     local VanPrompt = Van:WaitForChild("Van"):WaitForChild("Door"):WaitForChild("Center"):FindFirstChild("ProximityPrompt")
@@ -168,12 +168,13 @@ local function Main()
     end
 
     repeat task.wait(0.1) until CanContinue() == true
+    print("3. continuing.")
 
     -- getting information about what exist after one of the emf values reach a value higher than 1.
     local IsThere = OrbsAndPrints()
     local MainRoom = GetMainRoom()
-    local LowestTemp = GetLowestTemp()
-    local HighestEMF = GetHighestEMF()
+    local LowestTemp, TempZone = GetLowestTemp()
+    local HighestEMF, EMFZone = GetHighestEMF()
 
     -- tries to get book and spirit box from the "GetItem" function.
     local Book = GetItem("Ghost Writing Book", "Ghost Writing Book", false)
@@ -228,7 +229,7 @@ local function Main()
                 Do Orbs exist?: %s,
                 Do finger prints exist?: %s
         ]]):format(MainRoom.Name, tostring(LowestTemp), tostring(HighestEMF), OrbsExist, PrintsExist))
-        prints(AnalysisString)
+        print(AnalysisString)
     end
 end
 
