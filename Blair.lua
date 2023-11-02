@@ -204,21 +204,21 @@ local function Main()
 
     -- tries to get book and spirit box from the "GetItem" function.
     print("5. trying to get book")
-    local Book = GetItem("Ghost Writing Book", "Ghost Writing Book", true)
+    local Book = GetItem("Ghost Writing Book", "Ghost Writing Book", false)
     local BookHandle = nil
     local BPrompt = nil
     if Book ~= nil then
         BookHandle = Book:WaitForChild("Handle")
         BPrompt = BookHandle:WaitForChild("NewPickupPrompt")
     end
-    --local SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
+    --local SpiritBox = GetItem("Spirit Box", "Spirit Box", false)
 
     if Book == nil then --[[or SpiritBox == nil]]
         repeat 
             -- if book isn't in the "Items" folder, it will keep trying until it is parented to it.
             print("    trying again.")
-            Book = GetItem("Ghost Writing Book", "Ghost Writing Book", true)
-            --SpiritBox = GetItem("Spirit Box", "Spirit Box", true)
+            Book = GetItem("Ghost Writing Book", "Ghost Writing Book", false)
+            --SpiritBox = GetItem("Spirit Box", "Spirit Box", false)
             task.wait(0.1)
         until Book ~= nil and Book:IsA("Tool") --[[and SpiritBox:IsA("Tool")]] --[[and SpiritBox ~= nil]]
 
