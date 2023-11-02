@@ -1,11 +1,21 @@
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Player = Players.LocalPlayer
 
-local Zones = workspace.Map:WaitForChild("Zones")
-local Prints = workspace.Map:WaitForChild("Prints")
-local Orbs = workspace.Map:WaitForChild("Orbs")
-local Items = workspace.Map:WaitForChild("Items")
+local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+local InvRemotes = Remotes:WaitForChild("InventoryRemotes")
+local Action = InvRemotes:WaitForChild("Action")
 
+local Map = workspace:WaitForChild("Map")
+local Zones = Map:WaitForChild("Zones")
+local Prints = Map:WaitForChild("Prints")
+local Orbs = Map:WaitForChild("Orbs")
+local Items = Map:WaitForChild("Items")
+local Van = Map:WaitForChild("Van", 2)
+
+local FirePrompt = fireproximityprompt
+
+-- searches a instance for a certain instances that have the same name as the "Name" input and has the same class as the "Class" input. the "Method" input is how the script will search for it.
 local function Search(Parent, Name, Class, Method)
     if Parent ~= nil and Name ~= nil and Class ~= nil and Method ~= nil and typeof(Parent) == "Instance" and typeof(Name) == "string" and typeof(Class) == "string" and typeof(Method) == "string" then
         if Method == "GetDescendants" then
@@ -39,6 +49,7 @@ local function Search(Parent, Name, Class, Method)
     end
 end
 
+-- tries to fetch a item from the "Items" folder.
 local function GetItem(ItemName, PartialName, Toggle)
     if ItemName ~= nil and PartialName ~= nil and Toggle ~= nil then
         if typeof(ItemName) == "string" and typeof(PartialName) == "string" and typeof(Toggle) == "boolean" then
@@ -49,11 +60,20 @@ local function GetItem(ItemName, PartialName, Toggle)
                     return SearchTable
                 end
                 return false
+            elseif not Toggle then
+                local Item = Items:FindFirstChild(ItemName)
+
+                if Item ~= nil then
+                    return Item
+                end
+                return false
             end
         end
+        return false
     end
 end
 
+-- gets lowest temperature ingame.
 local function GetLowestTemp()
     local Temps = Search(Zones, "Temperature", "NumberValue", "GetDescendants")
 
@@ -68,6 +88,7 @@ local function GetLowestTemp()
     return LowestNum, Zone
 end
 
+-- gets highest emf value.
 local function GetHighestEMF()
     local EMFValues = Search(Zones, "EMF", "IntValue", "GetDescendants")
 
@@ -82,6 +103,7 @@ local function GetHighestEMF()
     return HighestNum, Zone
 end
 
+-- checks for if orbs or prints(finger prints) exist.
 local function OrbsAndPrints()
     local PrintsTable = Search(Prints, "PrintPart", "BasePart", "GetChildren")
     local OrbsTable = Search(Orbs, "OrbPart", "BasePart", "GetChildren")
@@ -94,16 +116,19 @@ local function OrbsAndPrints()
     for i, v in pairs(PrintsTable) do 
         if v ~= nil and v.Name == "PrintPart" then
             IsThereTable["Prints"] = true
+            break
         end
     end
     for i, v in pairs(OrbsTable) do 
         if v ~= nil and v.Name == "OrbPart" then
             IsThereTable["Orbs"] = true
+            break
         end
     end
     return IsThereTable
 end
 
+-- gets main ghost room.
 local function GetMainRoom()
     local MainTable = Search(Zones, "IsMainRoom", "BoolValue", "GetDescendants")
 
@@ -111,7 +136,98 @@ local function GetMainRoom()
     for _, MainInstance in pairs(MainTable) do
         if MainInstance ~= nil then
             Zone = MainInstance.Parent
+            break
         end
     end
     return Zone
+end
+
+-- checks for if a EMF value is higher than 1(1.1), if so then it returns true, if not, it will return false.
+local function CanContinue()
+    local CanDo = false
+
+    for _, Number in pairs(GetHighestEMF()) do 
+        if Number ~= nil and typeof(Number) == "number" then
+            if Number > 1.1 then
+                CanDo = true
+                break
+            end
+        end
+    end
+    return CanDo
+end
+
+local function Main()
+    wait(1)
+    
+    -- checks for if the van door has been open or hasn't been open yet, if not open, then it opens it.
+    local VanPrompt = Van:WaitForChild("Van"):WaitForChild("Door"):WaitForChild("Center"):FindFirstChild("ProximityPrompt")
+    if VanPrompt then
+        repeat task.wait(0.1) until Player.Character ~= nil
+        repeat FirePrompt(VanPrompt) task.wait(0.1) until VanPrompt == nil or VanPrompt.Parent == nil
+    end
+
+    repeat task.wait(0.1) until CanContinue() == true
+
+    -- getting information about what exist after one of the emf values reach a value higher than 1.
+    local IsThere = OrbsAndPrints()
+    local MainRoom = GetMainRoom()
+    local LowestTemp = GetLowestTemp()
+    local HighestEMF = GetHighestEMF()
+
+    -- tries to get book and spirit box from the "GetItem" function.
+    local Book = GetItem("Ghost Writing Book", "Ghost Writing Book", false)
+    local SpiritBox = GetItem("Spirit Box", "Spirit Box", false)
+
+    if Book == nil or SpiritBox == nil then
+        repeat 
+            -- if book isn't in the "Items" folder, it will wait until it is parented to it.
+            Book = GetItem("Ghost Writing Book", "Ghost Writing Book", false)
+            SpiritBox = GetItem("Spirit Box", "Spirit Box", false)
+            task.wait()
+        until Book ~= nil and SpiritBox ~= nil and Book:IsA("Tool") and SpiritBox:IsA("Tool")
+        
+        local BookHandle = Book:WaitForChild("Handle")
+        local BPrompt = BookHandle:WaitForChild("NewPickupPrompt")
+
+        -- repeats trying to pickup the book up and dropping it to make it unanchored, then teleporting it to the main room from the "GetMainRoom" function. won't try to teleport if the book's handle has "AlreadyTeleported" value.
+        if not BookHandle:FindFirstChild("AlreadyTeleported") then
+            local Val = Instance.new("IntValue", BookHandle)
+            Val.Name = "AlreadyTeleported"
+
+            repeat 
+                FirePrompt(BPrompt) 
+                task.wait(0.1) 
+            until Player.Character:FindFirstChild(Book.Name)
+            Action:FireServer("Drop")
+            repeat 
+                task.wait() 
+            until not Player.Character:FindFirstChild(Book.Name)
+            BookHandle.CFrame = MainRoom.CFrame
+        end
+
+        task.wait()
+
+        -- some basic logic stuff.
+        local OrbsExist = "No"
+        local PrintsExist = "No"
+        if IsThere["Orbs"] then
+            OrbsExist = "Yes"
+        end
+        if IsThere["Prints"] then
+            OrbsExist = "Yes"
+        end
+
+        -- string that contains analytics about what exist and stuff.
+        local AnalysisString = (tostring([[
+            
+            Script Analysis:
+                Main Room: %s,
+                Lowest Current Temp: %s, 
+                Highest Current EMF Value: %s,
+                Do Orbs exist?: %s,
+                Do finger prints exist?: %s
+        ]]):format(MainRoom.Name, tostring(LowestTemp), tostring(HighestEMF), OrbsExist, PrintsExist))
+        prints(AnalysisString)
+    end
 end
