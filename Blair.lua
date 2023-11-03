@@ -207,13 +207,17 @@ local function Main()
     local Book = GetItem("Ghost Writing Book", "Ghost Writing Book", false)
     local BookHandle = nil
     local BPrompt = nil
-    if Book ~= nil and typeof(Book) == "Instance" then
-        BookHandle = Book:WaitForChild("Handle")
-        BPrompt = BookHandle:WaitForChild("NewPickupPrompt")
+    if Book ~= nil then
+        if typeof(Book) == "Instance" then
+            BookHandle = Book:WaitForChild("Handle")
+            BPrompt = BookHandle:WaitForChild("NewPickupPrompt")
+        end
+    elseif Book == nil then
+        print("/ failed to get book")
     end
     --local SpiritBox = GetItem("Spirit Box", "Spirit Box", false)
 
-    if Book == nil then --[[or SpiritBox == nil]]
+    if Book == nil and Book.Parent ~= nil then --[[or SpiritBox == nil]]
         repeat 
             -- if book isn't in the "Items" folder, it will keep trying until it is parented to it.
             print("    trying again.")
