@@ -239,13 +239,16 @@ local function Main()
             task.wait(0.1) 
         until Player.Character:FindFirstChild(Book.Name)
         print("/ grabbed book.")
+
+        task.wait(0.1)
+
         print("/ dropping book.")
         Action:FireServer("Drop")
         repeat 
             task.wait() 
         until not Player.Character:FindFirstChild(Book.Name)
         print("/ teleporting book.")
-        task.wait(1)
+        task.wait()
         BookHandle.CFrame = MainRoom.CFrame
     end
 
