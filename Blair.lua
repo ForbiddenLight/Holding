@@ -229,7 +229,7 @@ local function Main()
     end
 
     -- repeats trying to pickup the book up and dropping it to make it unanchored, then teleporting it to the main room from the "GetMainRoom" function. won't try to teleport if the book's handle has "AlreadyTeleported" value.
-    if not BookHandle:FindFirstChild("AlreadyTeleported") and typeof(Book) == "Instance" then
+    if typeof(Book) == "Instance" and not BookHandle:FindFirstChild("AlreadyTeleported") then
         print("/ creating teleported book value.")
         local Val = Instance.new("IntValue", BookHandle)
         Val.Name = "AlreadyTeleported"
@@ -250,7 +250,7 @@ local function Main()
         print("/ teleporting book.")
         task.wait()
         BookHandle.CFrame = MainRoom.CFrame
-    elseif BookHandle:FindFirstChild("AlreadyTeleported") and typeof(Book) == "Instance" then
+    elseif typeof(Book) == "Instance" and BookHandle:FindFirstChild("AlreadyTeleported") then
         print("/ removing teleported book value.")
         local Val = BookHandle:WaitForChild("AlreadyTeleported")
         Val:Destroy()
