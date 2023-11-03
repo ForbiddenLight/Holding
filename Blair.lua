@@ -207,7 +207,7 @@ local function Main()
     local Book = GetItem("Ghost Writing Book", "Ghost Writing Book", false)
     local BookHandle = nil
     local BPrompt = nil
-    if Book ~= nil then
+    if Book ~= nil and typeof(Book) == "Instance" then
         BookHandle = Book:WaitForChild("Handle")
         BPrompt = BookHandle:WaitForChild("NewPickupPrompt")
     end
@@ -229,7 +229,7 @@ local function Main()
     end
 
     -- repeats trying to pickup the book up and dropping it to make it unanchored, then teleporting it to the main room from the "GetMainRoom" function. won't try to teleport if the book's handle has "AlreadyTeleported" value.
-    if not BookHandle:FindFirstChild("AlreadyTeleported") then
+    if not BookHandle:FindFirstChild("AlreadyTeleported") and typeof(Book) == "Instance" then
         print("/ creating teleported book value.")
         local Val = Instance.new("IntValue", BookHandle)
         Val.Name = "AlreadyTeleported"
@@ -250,7 +250,7 @@ local function Main()
         print("/ teleporting book.")
         task.wait()
         BookHandle.CFrame = MainRoom.CFrame
-    elseif BookHandle:FindFirstChild("AlreadyTeleported") then
+    elseif BookHandle:FindFirstChild("AlreadyTeleported") and typeof(Book) == "Instance" then
         print("/ removing teleported book value.")
         local Val = BookHandle:WaitForChild("AlreadyTeleported")
         Val:Destroy()
