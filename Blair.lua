@@ -250,6 +250,13 @@ local function Main()
         print("/ teleporting book.")
         task.wait()
         BookHandle.CFrame = MainRoom.CFrame
+    elseif BookHandle:FindFirstChild("AlreadyTeleported") then
+        print("/ removing teleported book value.")
+        local Val = BookHandle:WaitForChild("AlreadyTeleported")
+        Val:Destroy()
+
+        print("/ teleporting book.")
+        BookHandle.CFrame = Player.Character.PrimaryPart.CFrame
     end
 
     task.wait()
