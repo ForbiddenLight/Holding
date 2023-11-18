@@ -46,7 +46,7 @@ MT.__namecall = newcclosure(function(Remote, ...)
 				while _G.IsShooting == true do 
 					local Closest = FetchClosestEnemyPlane()
 					if Closest ~= nil then
-						GameEvent[Method]( Remote, "aim", {[1] = Closest.Seat.Position + (Closest.Seat.Velocity * (Player:GetNetworkPing() / 100 * 16) ) } )
+						GameEvent[Method]( Remote, "aim", {[1] = Closest.Seat.Position + (Closest.Seat.Velocity * (Player:GetNetworkPing() / 100 * 18) ) } )
 						task.wait(0.1)
 					end
 				end
