@@ -1,3 +1,5 @@
+-- just execute and hold F.
+
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local RStorage = game:GetService("ReplicatedStorage")
