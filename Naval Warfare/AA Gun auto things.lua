@@ -1,11 +1,16 @@
+-- just hold or tap F.
+-- press L to change the target type(Planes or Players).
+
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local RStorage = game:GetService("ReplicatedStorage")
 local PlayerInput = game:GetService("UserInputService")
 
-_G.EnableDebug = true
+_G.EnableDebug = false
 
-getgenv().ShootAtType = "Planes"
+if ShootAtType == nil then 
+	getgenv().ShootAtType = "Planes"
+end
 if _G.TypeChanger then 
 	_G.TypeChanger:Disconnect()
 end
@@ -75,7 +80,7 @@ local function FetchClosest()
 				end
 			end
 			if ClosestPlayer ~= nil then 
-				return ClosestPlayer:WaitForChild("Torso", 2)
+				return ClosestPlayer.PrimaryPart or ClosestPlayer:WaitForChild("Torso", 2)
 			elseif ClosestPlayer == nil then 
 				return false
 			end
