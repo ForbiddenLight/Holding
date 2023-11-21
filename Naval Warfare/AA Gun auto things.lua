@@ -109,7 +109,7 @@ MT.__namecall = newcclosure(function(Remote, ...)
 						task.wait(0.1)
 					elseif Closest ~= nil then 
 						if ShootAtType == "Planes" then 
-							GameEvent[Method]( Remote, "aim", {[1] = Closest.Position + (Closest.Velocity * (Player:GetNetworkPing() / 100 * 21.2) ) } )
+							GameEvent[Method]( Remote, "aim", {[1] = Closest.Position + (Closest.Velocity * (Player:GetNetworkPing() / 100 * 23.2) ) } )
 							if _G.EnableDebug then
 								print("[DEBUG]: plane target")
 							end
