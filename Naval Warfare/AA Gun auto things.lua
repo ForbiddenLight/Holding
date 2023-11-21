@@ -1,5 +1,8 @@
 -- just hold or tap F.
--- press L to change the target type(Planes or Players).
+-- press L to change the target type (Planes or Players).
+
+-- works with AA guns on battleships, islands, carriers.
+-- also works with the "Large Bomber" plane.
 
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
@@ -16,16 +19,13 @@ if _G.TypeChanger then
 end
 
 _G.TypeChanger = PlayerInput.InputBegan:Connect(function(Key, Process)
-	if Key.KeyCode == Enum.KeyCode.L and not Process then 
-		local Type = tostring(_G.Type)
-		
+	if Key.KeyCode == Enum.KeyCode.L and not Process then 		
 		if ShootAtType == "Planes" then 
 			ShootAtType = "Players"
 		elseif ShootAtType == "Players" then 
 			ShootAtType = "Planes"
 		end
-		_G.Type = ShootAtType
-		print(ShootAtType)
+		print("[TARGET SELECTION TYPE]: "..ShootAtType)
 	end
 end)
 
@@ -44,7 +44,7 @@ local function FetchClosest()
 					local OwnerTeam = Plane:WaitForChild("Team", 2)
 					
 					if OwnerTeam ~= nil and OwnerTeam:IsA("StringValue") then
-						if OwnerTeam.Value ~= PlayerTeam then 
+						if OwnerTeam.Value ~= PlayerTeam and Plane.Seat.Position.Y > -20 then 
 							local Distance = (Vector3.new(Player.Character.PrimaryPart.Position.X, 10, Player.Character.PrimaryPart.Position.Z) - Vector3.new(Plane.Seat.Position.X, 10, Plane.Seat.Position.Z)).Magnitude
 							if Distance < Magnitude then 
 								Magnitude = Distance
@@ -69,7 +69,7 @@ local function FetchClosest()
 					local OwnerTeam = tostring(Target.Team.Name)
 					
 					if OwnerTeam ~= nil then
-						if OwnerTeam ~= PlayerTeam then 
+						if OwnerTeam ~= PlayerTeam and Char.PrimaryPart.Position.Y > -250 then 
 							local Distance = (Vector3.new(Player.Character.PrimaryPart.Position.X, 10, Player.Character.PrimaryPart.Position.Z) - Vector3.new(Char.PrimaryPart.Position.X, 10, Char.PrimaryPart.Position.Z)).Magnitude
 							if Distance < Magnitude then 
 								Magnitude = Distance
@@ -99,24 +99,24 @@ MT.__namecall = newcclosure(function(Remote, ...)
     if Remote.Name == "Event" and Method == "FireServer" then
         if Args[1] ~= nil and Args[1] == "shoot" and Args[2][1] ~= nil and typeof(Args[2][1]) == "boolean" and Args[2][1] == true then 
 			_G.IsShooting = true
-			print("shoot")
+			print("[INFO]: Shooting.")
 			coroutine.resume(coroutine.create(function()
 				while _G.IsShooting == true do 
 					local Closest = FetchClosest()
 					if Closest == false or Closest == nil then
 						GameEvent[Method](Remote, unpack(Args))
-						print("failed, target not found.")
+						print("[ERROR]: Failed, target not found.")
 						task.wait(0.1)
 					elseif Closest ~= nil then 
 						if ShootAtType == "Planes" then 
 							GameEvent[Method]( Remote, "aim", {[1] = Closest.Position + (Closest.Velocity * (Player:GetNetworkPing() / 100 * 21.2) ) } )
 							if _G.EnableDebug then
-								print("plane target")
+								print("[DEBUG]: plane target")
 							end
 						elseif ShootAtType == "Players" then 
 							GameEvent[Method]( Remote, "aim", {[1] = Closest.Position + (Closest.Velocity * (Player:GetNetworkPing() / 100 * 0.21) ) } )
 							if _G.EnableDebug then
-								print("player target")
+								print("[DEBUG]: player target")
 							end
 						end
 						task.wait(0.1)
@@ -125,7 +125,7 @@ MT.__namecall = newcclosure(function(Remote, ...)
 			end))
 		elseif Args[1] ~= nil and Args[1] == "shoot" and Args[2][1] ~= nil and typeof(Args[2][1]) == "boolean" and Args[2][1] == false then
 			_G.IsShooting = false		
-			print("stopped shoot")
+			print("[INFO]: Stopped shooting.")
 			return GameEvent[Method](Remote, "shoot", {[1] = false})
 		end
     end
