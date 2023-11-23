@@ -128,35 +128,39 @@ MT.__namecall = newcclosure(function(Remote, ...)
 			print("[INFO]: Stopped shooting.")
 			return GameEvent[Method](Remote, "shoot", {[1] = false})
 		elseif Args[1] ~= nil and Args[1] == "fire" then
-			GameEvent[Method]( Remote, "fire" ) 
 			
-			local Missile
-			local Connection 
-			Connection = workspace.ChildAdded:Connect(function(Child)
-				if Child.Name == "Missile" then 
-					local Script = Child:WaitForChild("MissileScript", 2)
-					
-					if Script ~= nil then 
-						local Owner = Script:FindFirstChild("Owner")
+			coroutine.resume(coroutine.create(function()
+				local Missile
+				local Connection 
+				Connection = workspace.ChildAdded:Connect(function(Child)
+					if Child.Name == "Missile" then 
+						local Script = Child:WaitForChild("MissileScript", 2)
 						
-						if Owner and Owner:IsA("StringValue") and Owner.Value == tostring(Plyer.Name) then 
-							Missile = Child
-							Connection:Disconnect()
+						if Script ~= nil then 
+							local Owner = Script:FindFirstChild("Owner")
+							
+							if Owner and Owner:IsA("StringValue") and Owner.Value == tostring(Player.Name) then 
+								Missile = Child
+								Connection:Disconnect()
+							end
 						end
 					end
+				end)
+				GameEvent[Method]( Remote, "fire" ) 
+				
+				local Count = 0
+				repeat wait(1) Count += 1 until Missile ~= nil or Count == 5
+				
+				if Missile ~= nil then 
+					local Closest = FetchClosest()
+					if Closest ~= nil then 
+						Missile.CFrame = Closest.CFrame
+						task.wait(0.1)
+						Missile.Anchored = true
+					end
 				end
-			end)
-			
-			local Count = 0
-			repeat wait(1) Count += 1 until Missile ~= nil or Count == 5
-			
-			if Missile ~= nil then 
-				local Closest = FetchClosest()
-				if Closest ~= nil then 
-					Missile.CFrame = Closest.CFrame
-					Missile.Anchored = true
-				end
-			end
+			end))
+			return
 		end
     end
     return Old(Remote, ...)
