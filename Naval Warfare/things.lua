@@ -154,8 +154,12 @@ MT.__namecall = newcclosure(function(Remote, ...)
 				if Missile ~= nil then 
 					local Closest = FetchClosest()
 					if Closest ~= nil then 
-						task.wait()
-						Missile.CFrame = Closest.CFrame
+						print("[INFO]: Found missile target.")
+						repeat
+							task.wait()
+							Missile.CFrame = Closest.CFrame
+							task.wait()
+						until Missile == nil or Closest == nil or Closest.Parent == nil or Missile.Parent == nil
 					end
 				end
 			end))
