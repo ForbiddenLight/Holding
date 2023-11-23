@@ -4,6 +4,8 @@
 -- works with AA guns on battleships, islands, carriers.
 -- also works with the "Large Bomber" plane.
 
+-- teleports missiles owned by the player to enemy planes/enemy players
+
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local RStorage = game:GetService("ReplicatedStorage")
