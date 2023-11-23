@@ -127,6 +127,36 @@ MT.__namecall = newcclosure(function(Remote, ...)
 			_G.IsShooting = false		
 			print("[INFO]: Stopped shooting.")
 			return GameEvent[Method](Remote, "shoot", {[1] = false})
+		elseif Args[1] ~= nil and Args[1] == "fire" then
+			GameEvent[Method]( Remote, "fire") ) } )
+			
+			local Missile
+			local Connection 
+			Connection = workspace.ChildAdded:Connect(function(Child)
+				if Child.Name == "Missile" then 
+					local Script = Child;WaitForChild("MissileScript", 2)
+					
+					if Script ~= nil then 
+						local Owner = Script:FindFirstChild("Owner")
+						
+						if Owner and Owner:IsA("StringValue") and Owner.Value == tostring(Plyer.Name) then 
+							Missile = Child
+							Connection:Disconnect()
+						end
+					end
+				end
+			end)
+			
+			local Count = 0
+			repeat wait(1) Count += 1 until Missile ~= nil or Count == 5
+			
+			if Missile ~= nil then 
+				local Closest = FetchClosest()
+				if Closest ~= nil then 
+					Missile.CFrame = Closest.CFrame
+					Missile.Anchored = true
+				end
+			end
 		end
     end
     return Old(Remote, ...)
