@@ -154,9 +154,8 @@ MT.__namecall = newcclosure(function(Remote, ...)
 				if Missile ~= nil then 
 					local Closest = FetchClosest()
 					if Closest ~= nil then 
+						task.wait()
 						Missile.CFrame = Closest.CFrame
-						task.wait(0.1)
-						Missile.Anchored = true
 					end
 				end
 			end))
