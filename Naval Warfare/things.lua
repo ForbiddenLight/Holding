@@ -4,8 +4,6 @@
 -- works with AA guns on battleships, islands, carriers.
 -- also works with the "Large Bomber" plane.
 
--- teleports missiles owned by the player to enemy planes/enemy players
-
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local RStorage = game:GetService("ReplicatedStorage")
@@ -130,7 +128,7 @@ MT.__namecall = newcclosure(function(Remote, ...)
 			print("[INFO]: Stopped shooting.")
 			return GameEvent[Method](Remote, "shoot", {[1] = false})
 		elseif Args[1] ~= nil and Args[1] == "fire" then
-			GameEvent[Method]( Remote, "fire") ) } )
+			GameEvent[Method]( Remote, "fire" ) 
 			
 			local Missile
 			local Connection 
