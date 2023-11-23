@@ -134,7 +134,7 @@ MT.__namecall = newcclosure(function(Remote, ...)
 			local Connection 
 			Connection = workspace.ChildAdded:Connect(function(Child)
 				if Child.Name == "Missile" then 
-					local Script = Child;WaitForChild("MissileScript", 2)
+					local Script = Child:WaitForChild("MissileScript", 2)
 					
 					if Script ~= nil then 
 						local Owner = Script:FindFirstChild("Owner")
