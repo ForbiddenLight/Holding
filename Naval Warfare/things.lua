@@ -4,6 +4,8 @@
 -- works with AA guns on battleships, islands, carriers.
 -- also works with the "Large Bomber" plane.
 
+-- teleports missiles that you shoot from the missile seat thing.
+
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local RStorage = game:GetService("ReplicatedStorage")
