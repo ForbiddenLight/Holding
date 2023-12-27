@@ -1,3 +1,3 @@
 Hello!!
 
-This is simply a place for me to save scripts
+This is simply a place for me to put stuff at
